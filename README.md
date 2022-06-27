@@ -2,11 +2,11 @@
  bots using discord python API
 
 
-##Carti Bot
+## Carti Bot
  - $toggle: toggles adlibs on/off
  - $triggers: list of triggers for bot
  - $quotes: list of bot's quotes
 
 
-##Test Bot
+## Test Bot
  - tests only
