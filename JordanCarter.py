@@ -7,13 +7,13 @@ from replit import db
 
 client = discord.Client()
 triggers = ["Jordan Carter",
-            "gaming", 
-            "carti", 
-            "slime", 
-            "fortnite",
-            "bictini",
+            "carti",
             "slime",
-            "slatt"
+            "slime",
+            "slatt",
+            "gaming",
+            "fortnite",
+            "bictini"
            ]
 quotes = [  "slatt",
             "my slime",
@@ -34,7 +34,8 @@ quotes = [  "slatt",
             "glocky",
             "VAMP",
             "PSPHSHPSSHSHPPPHPSHS",
-            "Ugh, ohh"
+            "Ugh, ohh",
+            "my bish, she got cake"
         ]
 reactions = [
             "🧛‍♂️",
@@ -65,14 +66,9 @@ def toggle_adlibs(author):
 
   db['adlibs'] = adlibs
 
-    
-
-def get_slime():
-  return random.choice(quotes)
-
 
 def get_jetpack():
-  q = [  "ayoo lil Jetpack wanna come out here",
+  q = [  "ayoo <@jetpack#4027> wanna come out here",
          "king cartii",
          "Pi'erre Bourne",
          "Sir Cartiere"
@@ -80,7 +76,7 @@ def get_jetpack():
   return random.choice(q)
 
 def get_lorralia():
-  q = [ "ayoo lorralia wanna come out here"
+  q = [ "ayoo <lorralia#6623> wanna come out here"
         "ayy lil mama",
         "wachu doin baby gurrll",
         "hnghhh",
@@ -90,7 +86,7 @@ def get_lorralia():
   return random.choice(q)
 
 def get_bictini():
-  q = [ "ayooo bictini wanna come out here"
+  q = [ "ayooo <@bictini#1986> wanna come out here"
         "bictini is now playing fortnite",
         "*Take The 'L' Fortnite Emote*",
         "harley quin is bad."
@@ -99,76 +95,93 @@ def get_bictini():
   
 
 @client.event
-async def on_ready():
+async def on_ready(): #logon event
   print('logged in as {0.user}'.format(client))
 
+
 @client.event
-async def on_message(message):
+async def on_message(message): #message event
   if message.author == client.user:
     return
 
+  #vars
   global adlibs
   msg = message.content
   channel = message.channel
   author = str(message.author)
   
+  #commands
+  if msg.startswith('$help'):
+    await channel.send("$bot, $triggers, $quotes, $toggle")
+    return
+  elif msg.startswith('$bot'):
+    await channel.send("Jordan Carter: " +
+                       str(db['adlibs'].get(author)))
+    return
+  elif msg.startswith('$channel'):
+    await channel.send("channel: " + str(channel))
+    return
+  elif msg.startswith('$author'):
+    await channel.send("author: " + author)
+    return
+  elif msg.startswith('$triggers'):
+    await channel.send(triggers)
+    return
+  elif msg.startswith('$quotes'):
+    await channel.send(quotes)
+    return
+  elif msg.startswith('$carti'):     #toggle adlibs
+    if '[' in msg and ']' in msg:
+      author = msg.split('[', 1)[1].split(']')[0]
+    toggle_adlibs(author)
+    print(str(db['adlibs']))
+    await channel.send("adlibs: " + author + " " +
+                       str(db['adlibs'].get(author)))
+    return
+  elif message.isMemberMentioned(client.user): #check for mentioned
+    await channel.send("WhAt-WHaa (what?)")
+  elif msg.startswith('$slime'):
+    await channel.send("slatty slatt slatt")
+    return
+  elif msg.startswith('$b'):
+    await channel.send("BIHHHH")
+    return
+
   # slime channel
   if str(channel) == "slime-only":
     if random.randint(0,2) == 0:
       if author == "jetpack#4027":
         await channel.send(get_jetpack())
+        return
       if author == "lorralia#6623":
         await channel.send(get_lorralia())
+        return
       if author == "bictini#1986":
         await channel.send(get_bictini())
+        return
     else:
-      await channel.send(get_slime())
-  
-  # other channels
-  else: 
-    if msg.startswith('$help'):
-      await channel.send("$bot, $triggers, $quotes, $toggle")
-    elif msg.startswith('$bot'):
-      await channel.send("Jordan Carter")
-    elif msg.startswith('$channel'):
-      await channel.send("channel: " + str(channel))
-    elif msg.startswith('$author'):
-      await channel.send("author: " + author)
-    elif msg.startswith('$triggers'):
-      await channel.send(triggers)
-    elif msg.startswith('$quotes'):
-      await channel.send(quotes)
-    elif msg.startswith('$toggle'):
-      if '[' in msg and ']' in msg:
-        author = msg.split('[', 1)[1].split(']')[0]
-      toggle_adlibs(author)
-      print(str(db['adlibs']))
-      await channel.send("adlibs: " + author + " " +
-                         str(db['adlibs'].get(author)))
-    elif msg.startswith('$slime'):
-      await channel.send("slatty slatt slatt")
-    elif msg.startswith('$b'):
-      await channel.send("BIHHHH")
-    else:
-      try:
-        print("WAIT")
-        await client.wait_for('message',timeout=2.1)
-      except asyncio.TimeoutError:
-        print("TIME UP")
-        if any(word in msg for word in triggers):
+      await channel.send(random.choice(quotes))
+      for i in range(0,random.randint(0,5)):
+            await message.add_reaction(random.choice(reactions))
+
+    # send message & react
+    try:
+      print("WAIT")
+      await client.wait_for('message',timeout=2.1)
+    except asyncio.TimeoutError:
+      print("TIME UP")
+      if any(word in msg for word in triggers):
+        await channel.send(random.choice(quotes))
+        for i in range(0,random.randint(0,5)):
+          await message.add_reaction(random.choice(reactions))
+      elif author in db['adlibs']:
+        if db['adlibs'].get(author):
+          await channel.send(random.choice(quotes))
           for i in range(0,random.randint(0,5)):
             await message.add_reaction(random.choice(reactions))
-          await channel.send(get_slime())
-        elif author in db['adlibs']:
-          if db['adlibs'].get(author):
-            for i in range(0,random.randint(0,5)):
-              await message.add_reaction(random.choice(reactions))
-            await channel.send(get_slime())
-      else:
-        print("TYPING")
+    else:
+      print("NEW MESSAGE")
       
-
-  
 
 keep_alive()
 client.run(os.environ['TOKEN'])
