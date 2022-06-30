@@ -1,6 +1,7 @@
 import discord
 import os
 import random
+import asyncio
 from keep_alive import keep_alive
 from replit import db
 
@@ -9,11 +10,10 @@ triggers = ["Jordan Carter",
             "gaming", 
             "carti", 
             "slime", 
-            "b", 
             "fortnite",
             "bictini",
             "slime",
-            "slatty"
+            "slatt"
            ]
 quotes = [  "slatt",
             "my slime",
@@ -36,6 +36,19 @@ quotes = [  "slatt",
             "PSPHSHPSSHSHPPPHPSHS",
             "Ugh, ohh"
         ]
+reactions = [
+            "🧛‍♂️",
+            "🩸",
+            "🅱️",
+            "💎",
+            "🔫",
+            "💵",
+            "😈",
+            "💀",
+            "🔪",
+            "💯",
+            "❄️"
+          ]
 
 
 def toggle_adlibs(author):
@@ -61,7 +74,8 @@ def get_slime():
 def get_jetpack():
   q = [  "ayoo lil Jetpack wanna come out here",
          "king cartii",
-         "Pi'erre Bourne"
+         "Pi'erre Bourne",
+         "Sir Cartiere"
       ]
   return random.choice(q)
 
@@ -79,7 +93,7 @@ def get_bictini():
   q = [ "ayooo bictini wanna come out here"
         "bictini is now playing fortnite",
         "*Take The 'L' Fortnite Emote*",
-        "harley quin is badd",
+        "harley quin is bad."
       ]
   return random.choice(q)
   
@@ -97,7 +111,7 @@ async def on_message(message):
   msg = message.content
   channel = message.channel
   author = str(message.author)
-
+  
   # slime channel
   if str(channel) == "slime-only":
     if random.randint(0,2) == 0:
@@ -135,12 +149,24 @@ async def on_message(message):
       await channel.send("slatty slatt slatt")
     elif msg.startswith('$b'):
       await channel.send("BIHHHH")
-    elif any(word in msg for word in triggers):
-      await channel.send(get_slime())
-    elif author in db['adlibs']:
-      if db['adlibs'].get(author):
-        await channel.send(get_slime())
-
+    else:
+      try:
+        print("WAIT")
+        await client.wait_for('message',timeout=2.1)
+      except asyncio.TimeoutError:
+        print("TIME UP")
+        if any(word in msg for word in triggers):
+          for i in range(0,random.randint(0,5)):
+            await message.add_reaction(random.choice(reactions))
+          await channel.send(get_slime())
+        elif author in db['adlibs']:
+          if db['adlibs'].get(author):
+            for i in range(0,random.randint(0,5)):
+              await message.add_reaction(random.choice(reactions))
+            await channel.send(get_slime())
+      else:
+        print("TYPING")
+      
 
   
 
