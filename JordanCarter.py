@@ -15,7 +15,8 @@ triggers = ["Jordan Carter",
             "fortnite",
             "bictini"
            ]
-quotes = [  "slatt",
+quotes = [  "ayoo <@&980890353634779268> wanna come out here",
+            "slatt",
             "my slime",
             "carti",
             "BIHHHHH",
@@ -68,7 +69,7 @@ def toggle_adlibs(author):
 
 
 def get_jetpack():
-  q = [  "ayoo <@jetpack#4027> wanna come out here",
+  q = [  "ayoo <@196119754786734091> wanna come out here",
          "king cartii",
          "Pi'erre Bourne",
          "Sir Cartiere"
@@ -76,7 +77,7 @@ def get_jetpack():
   return random.choice(q)
 
 def get_lorralia():
-  q = [ "ayoo <lorralia#6623> wanna come out here"
+  q = [ "ayoo <@574849756363489301> wanna come out here"
         "ayy lil mama",
         "wachu doin baby gurrll",
         "hnghhh",
@@ -86,7 +87,7 @@ def get_lorralia():
   return random.choice(q)
 
 def get_bictini():
-  q = [ "ayooo <@bictini#1986> wanna come out here"
+  q = [ "ayooo <@354562251039965184> wanna come out here"
         "bictini is now playing fortnite",
         "*Take The 'L' Fortnite Emote*",
         "harley quin is bad."
@@ -103,12 +104,13 @@ async def on_ready(): #logon event
 async def on_message(message): #message event
   if message.author == client.user:
     return
-
+ 
   #vars
   global adlibs
   msg = message.content
   channel = message.channel
   author = str(message.author)
+  print("MESSAGE: " + author + " " + str(channel) + " ")
   
   #commands
   if msg.startswith('$help'):
@@ -138,8 +140,8 @@ async def on_message(message): #message event
     await channel.send("adlibs: " + author + " " +
                        str(db['adlibs'].get(author)))
     return
-  elif message.isMemberMentioned(client.user): #check for mentioned
-    await channel.send("WhAt-WHaa (what?)")
+  elif '<@&980554058186244129>' in msg or '<@972279731984662569>' in msg:
+    await channel.send("<@%s>"%message.author.id+ " WhAt-WHaa (what?) ")
   elif msg.startswith('$slime'):
     await channel.send("slatty slatt slatt")
     return
@@ -164,24 +166,24 @@ async def on_message(message): #message event
       for i in range(0,random.randint(0,5)):
             await message.add_reaction(random.choice(reactions))
 
-    # send message & react
-    try:
-      print("WAIT")
-      await client.wait_for('message',timeout=2.1)
-    except asyncio.TimeoutError:
-      print("TIME UP")
-      if any(word in msg for word in triggers):
+
+  # send message & react
+  try:
+    print("WAIT")
+    await client.wait_for('message',timeout=2.1)
+  except asyncio.TimeoutError:
+    print("TIME UP")
+    if any(word in msg for word in triggers):
+      await channel.send(random.choice(quotes))
+      for i in range(0,random.randint(0,5)):
+        await message.add_reaction(random.choice(reactions))
+    elif author in db['adlibs']:
+      if db['adlibs'].get(author):
         await channel.send(random.choice(quotes))
         for i in range(0,random.randint(0,5)):
           await message.add_reaction(random.choice(reactions))
-      elif author in db['adlibs']:
-        if db['adlibs'].get(author):
-          await channel.send(random.choice(quotes))
-          for i in range(0,random.randint(0,5)):
-            await message.add_reaction(random.choice(reactions))
-    else:
-      print("NEW MESSAGE")
-      
+  else:
+    print("NEW MESSAGE")
 
 keep_alive()
 client.run(os.environ['TOKEN'])
