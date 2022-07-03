@@ -110,7 +110,7 @@ async def on_message(message): #message event
   msg = message.content
   channel = message.channel
   author = str(message.author)
-  print("MESSAGE: " + author + " " + str(channel) + " ")
+  print("MESSAGE: " + author + " " + str(channel) + "\n\t"+ msg)
   
   #commands
   if msg.startswith('$help'):
@@ -140,8 +140,16 @@ async def on_message(message): #message event
     await channel.send("adlibs: " + author + " " +
                        str(db['adlibs'].get(author)))
     return
-  elif '<@&980554058186244129>' in msg or '<@972279731984662569>' in msg:
+  elif '<@&980554058186244129>' in msg or '<@972279731984662569>' in msg: #check for metntions
     await channel.send("<@%s>"%message.author.id+ " WhAt-WHaa (what?) ")
+  elif '<' in msg and '>' in msg and '@' in msg: 
+    if msg.find('<@') > -1 and msg.find('<@') < msg.find('>'):
+      try:
+        mention = str(msg.split('<', 1)[1].split('>')[0])
+      except:
+        print("no metion found")
+      await channel.send('AYOOO <%s>' % mention)
+      return
   elif msg.startswith('$slime'):
     await channel.send("slatty slatt slatt")
     return
@@ -161,10 +169,6 @@ async def on_message(message): #message event
       if author == "bictini#1986":
         await channel.send(get_bictini())
         return
-    else:
-      await channel.send(random.choice(quotes))
-      for i in range(0,random.randint(0,5)):
-            await message.add_reaction(random.choice(reactions))
 
 
   # send message & react
