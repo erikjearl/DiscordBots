@@ -9,4 +9,5 @@
 
 
 ## Test Bot
- - tests only
+ - test bot functionality
+ - respond & react to chats
