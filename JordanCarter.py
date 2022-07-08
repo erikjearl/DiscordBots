@@ -104,6 +104,8 @@ async def on_ready(): #logon event
 async def on_message(message): #message event
   if message.author == client.user:
     return
+  if str(message.channel) == 'gaming':
+    return
  
   #vars
   global adlibs
